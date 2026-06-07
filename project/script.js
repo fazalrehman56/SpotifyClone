@@ -10,36 +10,18 @@ function secondsToMinutesSeconds(seconds) {
 }
 
 async function getSongs(folder) {
-    let a = await fetch(`${folder}`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let as = div.getElementsByTagName("a");
+    let response = await fetch(`/${folder}/info.json`);
+    let songFiles = await response.json();
 
-    let songs = [];
+    let songs = songFiles.map(file =>
+        `${window.location.origin}/${folder}/${encodeURIComponent(file)}`
+    );
 
-    for (let index = 0; index < as.length; index++) {
-    const element = as[index];
-    if (element.href.endsWith(".mp3")) {
-       
-        let decoded = decodeURIComponent(element.href);
-      
-        let fileName = decoded.split("\\").pop(); 
-        // Clean URL origin + folder + filename
-        let origin = window.location.origin;
-        let cleanUrl = `${origin}/project/${folder}/${fileName}`;
-        songs.push(cleanUrl);
-        console.log("Clean URL:", cleanUrl);
-    }
-}
     let songul = document.querySelector(".Song-list ul");
     songul.innerHTML = "";
 
-    songs.forEach((songUrl) => {
-        // split by "/" and get last part
-        let fileName = decodeURIComponent(songUrl.split("/").pop());
-
-        let displayName = fileName
+    songs.forEach((songUrl, i) => {
+        let displayName = songFiles[i]
             .replace(".mp3", "")
             .replaceAll("-", " ")
             .replace("by ashir hindi top trending viral song", "")
@@ -59,7 +41,6 @@ async function getSongs(folder) {
         </li>`;
     });
 
-    // Li click listeners
     Array.from(document.querySelector(".Song-list").getElementsByTagName("li")).forEach((element, index) => {
         element.addEventListener("click", () => {
             let displayName = element.querySelector(".info").firstElementChild.innerHTML;
@@ -70,7 +51,6 @@ async function getSongs(folder) {
     });
 
     return songs;
-    
 }
 
 function playMusic(url) {
