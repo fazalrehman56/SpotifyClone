@@ -21,11 +21,11 @@ async function getSongs(folder) {
     for (let index = 0; index < as.length; index++) {
     const element = as[index];
     if (element.href.endsWith(".mp3")) {
-        // Decode karo pehle, phir backslash ko / se replace karo
+       
         let decoded = decodeURIComponent(element.href);
-        // Sirf filename lo
-        let fileName = decoded.split("\\").pop(); // last part after backslash
-        // Clean URL banao — origin + folder + filename
+      
+        let fileName = decoded.split("\\").pop(); 
+        // Clean URL origin + folder + filename
         let origin = window.location.origin;
         let cleanUrl = `${origin}/project/${folder}/${fileName}`;
         songs.push(cleanUrl);
@@ -36,7 +36,7 @@ async function getSongs(folder) {
     songul.innerHTML = "";
 
     songs.forEach((songUrl) => {
-        // ✅ Fix: split by "/" and get last part
+        // split by "/" and get last part
         let fileName = decodeURIComponent(songUrl.split("/").pop());
 
         let displayName = fileName
@@ -59,7 +59,7 @@ async function getSongs(folder) {
         </li>`;
     });
 
-    // ✅ Li click listeners
+    // Li click listeners
     Array.from(document.querySelector(".Song-list").getElementsByTagName("li")).forEach((element, index) => {
         element.addEventListener("click", () => {
             let displayName = element.querySelector(".info").firstElementChild.innerHTML;
